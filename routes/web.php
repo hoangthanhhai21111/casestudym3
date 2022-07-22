@@ -16,9 +16,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 
-Route::get('/', function () {
-    return view('index');
-})->name('index')->middleware('auth');
+Route::get('/', [StatuController::class, 'index'])->name('index')->middleware('auth');
 Route::prefix('Socialbook')->group(function () {
     Route::prefix('login')->group(function () {
         Route::get('/register', [UserController::class, 'register'])->name('register');

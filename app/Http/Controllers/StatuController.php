@@ -3,8 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Status;
+
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Session;
 
 class StatuController extends Controller
 {
@@ -15,7 +19,12 @@ class StatuController extends Controller
      */
     public function index()
     {
-        //
+        $itemps = DB::table('status')
+            ->join('users', 'users.id', '=', 'status.user_id')
+            ->select('users.name', 'status.*')
+            ->orderBy('created_at','DESC')
+            ->get();
+        return view('index', compact('itemps'));
     }
 
     /**
@@ -36,23 +45,27 @@ class StatuController extends Controller
      */
     public function store(Request $request)
     {
-        $product = new Status();
-        if ($request->hasFile('image')) {
-            $get_file = $request->image;
-            $get_name_file = $get_file->getClientOriginalName();
-            $name_file = current(explode('.', $get_name_file));
-            $new_file = $name_file . rand(0, 99) . '.' . $get_file->getClientOriginalExtension();
-            $get_file->move(public_path('upload'), $new_file);
-            $product->image = $new_file;
-        }           
-        $product->content = $request->content;
-        try {
-            $product->save();
-            return redirect()->route('index')->with('success', 'Thêm mới sản phẩm thành công');
-        } catch (\Exception $e) {
-            Log::error($e->getMessage());
-            return redirect()->route('create')->with('error', 'Thêm mới sản phẩm không thành công');
+        $id = Auth::user()->id;
+        // dd($id);
+        $Status = new Status();
+        $Status->content = $request->content;
+        $Status->user_id = $id;
+        $Status->trang_thai = $request->object;
+      
+     if ($request->hasFile('image')) {
+            $file = $request->image;
+            $fileExtension = $file->getClientOriginalExtension();//jpg,png lấy ra định dạng file và trả về
+            $fileName = time();//45678908766 tạo tên file theo thời gian
+            $newFileName = $fileName.'.'.$fileExtension;//45678908766.jpg
+            // $Status->image = $newFileName;// cột image gán bằng tên file mới
+            $request->file('image')->storeAs('public/images', $newFileName);//lưu file vào mục public/images với tê mới là $newFileName
+            $Status->image = $newFileName;
         }
+        $Status->save();
+
+        // $message = "Tạo Task $request->image thành công!";
+        Session::flash('create-success');
+        return redirect()->route('index');
     }
 
     /**

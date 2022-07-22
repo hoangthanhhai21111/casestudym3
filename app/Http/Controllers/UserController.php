@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Users;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
 {
@@ -14,6 +15,7 @@ class UserController extends Controller
     }
     function add(Request $request)
     {
+
         if($request->password==$request->passwords){
             $user = new Users();
             $user ->name = $request->name;
@@ -48,5 +50,16 @@ class UserController extends Controller
             $kq='tài khoản, hoặc mật khẩu không tồn tại';
             return view('login.login', compact('kq'));
         }
+    }
+    public function index()
+    {
+      $user = Users::all();
+      return response()->json(['user'=>$user], 200);
+    }
+
+    public function show($id)
+    {
+      $user = Users::find($id);
+      return response()->json(['user'=>$user], 200);
     }
 }

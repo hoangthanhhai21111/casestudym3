@@ -80,12 +80,12 @@
                             <textarea name="content" placeholder="What's on your mind, Alex?" id="" cols="30" rows="3"></textarea>
                             <div class="add-post-links">
 
-                                <input type="file"name='image' >
+                                <input type="file"name='image'>
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <input type="submit" class="btn btn-primary">Tải lên</input>
+                        <input type="submit" class="btn btn-primary">
                         </form>
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đống</button>
 
@@ -93,38 +93,40 @@
                 </div>
             </div>
         </div>
-
-        <div class="status-field-container write-post-container">
-            <div class="user-profile-box">
-                <div class="user-profile">
-                    <img src="{{ asset('images/profile-pic.png') }}" alt="">
+        @foreach ($itemps as $item)
+            <div class="status-field-container write-post-container">
+                <div class="user-profile-box">
+                    <div class="user-profile">
+                        <img src="{{ asset('images/profile-pic.png') }}" alt="">
+                        <div>
+                            <p> {{ $item->name }}</p>
+                            <small>{{ $item->created_at }}</small>
+                        </div>
+                    </div>
                     <div>
-                        <p> {{ auth()->user()->name ?? 'user name' }}</p>
-                        <small>August 13 1999, 09.18 pm</small>
+                        <a href="#"><i class="fas fa-ellipsis-v"></i></a>
                     </div>
                 </div>
-                <div>
-                    <a href="#"><i class="fas fa-ellipsis-v"></i></a>
-                </div>
-            </div>
-            <div class="status-field">
-                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Corporis dolores praesentium dicta
-                    laborum nihil accusantium odit laboriosam, sed sit autem! <a href="#">#This_Post_is_Better!!!!</a>
-                </p>
-                <img src="{{ asset('images/feed-image-1.png') }}" alt="">
+                <div class="status-field">
+                    <p>
+                        {{ $item->content }}
+                    </p>
+                    <img src="{{ asset('storage/images/' . $item->image) }}" alt="">
 
-            </div>
-            <div class="post-reaction">
-                <div class="activity-icons">
-                    <div><img src="{{ asset('images/like-blue.png') }}" alt="">120</div>
-                    <div><img src="{{ asset('images/comments.png') }}" alt="">52</div>
-                    <div><img src="{{ asset('images/share.png') }}" alt="">35</div>
                 </div>
-                <div class="post-profile-picture">
-                    <img src="{{ asset('images/profile-pic.png') }} " alt=""> <i class=" fas fa-caret-down"></i>
+                <div class="post-reaction">
+                    <div class="activity-icons">
+                        <div><img src="{{ asset('images/like-blue.png') }}" alt="">120</div>
+                        <div><img src="{{ asset('images/comments.png') }}" alt="">52</div>
+                        <div><img src="{{ asset('images/share.png') }}" alt="">35</div>
+                    </div>
+                    <div class="post-profile-picture">
+                        <img src="{{ asset('images/profile-pic.png') }} " alt=""> <i
+                            class=" fas fa-caret-down"></i>
+                    </div>
                 </div>
             </div>
-        </div>
+        @endforeach
         <button type="button" class="btn-LoadMore" onclick="LoadMoreToggle()">Load More</button>
     </div>
     <style>
